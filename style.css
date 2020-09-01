@@ -1,0 +1,26 @@
+/* * {
+    outline: 1px dotted blue;
+} */
+
+.tile {
+    width: 50px;
+    height: 50px;
+    display: inline-block;
+    margin: -2px;
+}
+
+.hacman {
+    background-image: url("./img/HacMan.gif");
+}
+
+.wall {
+    background-image: url("img/brick.png");
+}
+
+.dot {
+    background-image: url("img/dot.png");
+}
+
+.bg {
+    background-image: url("img/empty.png");
+}
