@@ -1,3 +1,3 @@
-# Hac-Man
+# JavaScript Games
 
-The Pac-Man game created with HTML, CSS and JS.
+Game classics recreated with HTML, CSS and JS.
