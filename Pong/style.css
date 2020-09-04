@@ -1,0 +1,16 @@
+.tile {
+    height: 30px;
+    width: 30px;
+    display: inline-block;
+    margin-bottom: -4px;
+}
+
+.bg {
+    background: black;
+}
+
+.border,
+.paddle,
+.ball {
+    background: white;
+}
