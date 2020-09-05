@@ -100,6 +100,7 @@ class Paddle extends Asset {
         this._context.beginPath();
         this._context.rect(this._x, this._y, this._width, this._height);
         this._context.stroke();
+        this._context.closePath();
     }
 
     moveDown() {
@@ -175,6 +176,7 @@ class Ball extends Asset {
             this._anticlockwise
         );
         this._context.fill();
+        this._context.closePath();
     }
 
     move() {
