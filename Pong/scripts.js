@@ -131,23 +131,11 @@ class Paddle extends Asset {
 }
 
 class Ball extends Asset {
-    constructor(
-        x,
-        y,
-        dx,
-        dy,
-        radius,
-        startAngle,
-        endAngle,
-        anticlockwise,
-        context,
-        color
-    ) {
+    constructor(x, y, dx, dy, radius, startAngle, endAngle, context, color) {
         super(x, y, dx, dy, context, color);
         this._radius = radius;
         this._startAngle = startAngle;
         this._endAngle = endAngle;
-        this._anticlockwise = anticlockwise;
     }
 
     get radius() {
@@ -174,14 +162,6 @@ class Ball extends Asset {
         this._endAngle = endAngle;
     }
 
-    get anticlockwise() {
-        return this._anticlockwise;
-    }
-
-    set anticlockwise(anticlockwise) {
-        this._anticlockwise = anticlockwise;
-    }
-
     //draw a circle with its given radius and x & y coordinates on the canvas and fill it with its given color
     draw() {
         this._context.beginPath();
@@ -196,25 +176,46 @@ class Ball extends Asset {
         );
         this._context.fill();
     }
+
+    move() {
+        this.clear(); //clear the current ball
+
+        this.draw(); //draw the new ball with new position
+
+        //check if the ball has reached the borders of the canvas and set the direction to the opposite
+        if (
+            this._x - this._radius < 0 ||
+            this._x + this._radius > CANVAS_WIDTH
+        ) {
+            this._dx = -this._dx;
+        }
+
+        if (
+            this._y - this._radius < 0 ||
+            this._y + this._radius > CANVAS_HEIGHT
+        ) {
+            this._dy = -this._dy;
+        }
+
+        //move ball by incrementing the x & y coordinate with dx & dy
+        this._x += this._dx;
+        this._y += this._dy;
+    }
+
+    //clear the current ball
+    clear() {
+        super.clear(20, 0, CANVAS_WIDTH - 20, CANVAS_HEIGHT);
+    }
 }
 
 function init() {
     var paddle1 = new Paddle(0, 0, 5, 10, 20, 100, CANVAS);
 
-    var ball = new Ball(
-        100,
-        200,
-        5,
-        5,
-        20,
-        0,
-        Math.PI * 2,
-        true,
-        CANVAS,
-        "#000000"
-    );
+    var ball = new Ball(100, 200, 5, 5, 20, 0, Math.PI * 2, CANVAS, "#000000");
 
-    ball.draw();
+    setInterval(function () {
+        ball.move();
+    }, 10);
 
     paddle1.draw();
     startGame(paddle1);
