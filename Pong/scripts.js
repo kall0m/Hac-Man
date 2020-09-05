@@ -7,14 +7,12 @@ const CANVAS_HEIGHT = pongCanvas.height;
 const CANVAS_X = 0;
 const CANVAS_Y = 0;
 
-class Paddle {
-    constructor(x, y, dx, dy, width, height, context) {
+class Asset {
+    constructor(x, y, dx, dy, context) {
         this._x = x;
         this._y = y;
         this._dx = dx;
         this._dy = dy;
-        this._width = width;
-        this._height = height;
         this._context = context;
     }
 
@@ -50,6 +48,28 @@ class Paddle {
         this._dy = dy;
     }
 
+    get context() {
+        return this._context;
+    }
+
+    set context(context) {
+        this._context = context;
+    }
+
+    draw() {}
+
+    clear(x, y, width, height) {
+        this._context.clearRect(x, y, width, height);
+    }
+}
+
+class Paddle extends Asset {
+    constructor(x, y, dx, dy, width, height, context) {
+        super(x, y, dx, dy, context);
+        this._width = width;
+        this._height = height;
+    }
+
     get width() {
         return this._width;
     }
@@ -64,14 +84,6 @@ class Paddle {
 
     set height(height) {
         this._height = height;
-    }
-
-    get context() {
-        return this._context;
-    }
-
-    set context(context) {
-        this._context = context;
     }
 
     //draw the paddle with its given x & y coordinates and width & height
@@ -105,12 +117,7 @@ class Paddle {
 
     //clear the current paddle
     clear() {
-        this._context.clearRect(
-            0, //FIX LATER
-            0, //FIX LATER
-            this._width + 1, //width of paddle + 1 px for the outline
-            CANVAS_HEIGHT
-        );
+        super.clear(0, 0, this._width + 1, CANVAS_HEIGHT); //width of paddle + 1 px for the outline
     }
 }
 
