@@ -184,17 +184,18 @@ class Ball extends Asset {
 
         this.draw(); //draw the new ball with new position
 
-        //check if the ball has reached the borders of the canvas and set the direction to the opposite
+        //check if the ball (the center of the ball and its radius) will reach the borders of the canvas
+        //if it will, reverse the direction
         if (
-            this._x - this._radius < 0 ||
-            this._x + this._radius > CANVAS_WIDTH
+            this._x + this._dx < this._radius ||
+            this._x + this._dx > CANVAS_WIDTH - this._radius
         ) {
             this._dx = -this._dx;
         }
 
         if (
-            this._y - this._radius < 0 ||
-            this._y + this._radius > CANVAS_HEIGHT
+            this._y + this._dy < this._radius ||
+            this._y + this._dy > CANVAS_HEIGHT - this._radius
         ) {
             this._dy = -this._dy;
         }
