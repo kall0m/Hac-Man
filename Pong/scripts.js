@@ -67,6 +67,37 @@ class Asset {
 
     draw() {}
 
+    moveUp() {
+        this._y -= this._dy; //move asset up by decrementing the y coordinate with dy
+    }
+
+    moveDown() {
+        this._y += this._dy; //move asset down by incrementing the y coordinate with dy
+    }
+
+    moveLeft() {
+        this._x -= this._dx; //move asset left by decrementing the x coordinate with dx
+    }
+
+    moveRight() {
+        this._x += this._dx; //move asset right by incrementing the x coordinate with dx
+    }
+
+    reverseHorizontalDirection() {
+        this._dx = -this._dx;
+    }
+
+    reverseVerticalDirection() {
+        this._dy = -this._dy;
+    }
+
+    move() {
+        //move asset by incrementing the x & y coordinate with dx & dy
+
+        this.moveRight();
+        this.moveDown();
+    }
+
     clear(x, y, width, height) {
         this._context.clearRect(x, y, width, height);
     }
@@ -101,28 +132,6 @@ class Paddle extends Asset {
         this._context.rect(this._x, this._y, this._width, this._height);
         this._context.stroke();
         this._context.closePath();
-    }
-
-    moveDown() {
-        //check if the paddle has reached the end of the canvas
-        if (this._y + this._height < CANVAS_HEIGHT) {
-            this.clear(); //clear the current paddle
-
-            this._y += this._dy; //move paddle down by incrementing the y coordinate with dy
-
-            this.draw(); //draw the new paddle with new position
-        }
-    }
-
-    moveUp() {
-        //check if the paddle has reached the beginning of the canvas
-        if (this._y > CANVAS_Y) {
-            this.clear(); //clear the current paddle
-
-            this._y -= this._dy; //move paddle up by decrementing the y coordinate with dy
-
-            this.draw(); //draw the new paddle with new position
-        }
     }
 
     //clear the current paddle
@@ -179,32 +188,6 @@ class Ball extends Asset {
         this._context.closePath();
     }
 
-    move() {
-        this.clear(); //clear the current ball
-
-        this.draw(); //draw the new ball with new position
-
-        //check if the ball (the center of the ball and its radius) will reach the borders of the canvas
-        //if it will, reverse the direction
-        if (
-            this._x + this._dx < this._radius ||
-            this._x + this._dx > CANVAS_WIDTH - this._radius
-        ) {
-            this._dx = -this._dx;
-        }
-
-        if (
-            this._y + this._dy < this._radius ||
-            this._y + this._dy > CANVAS_HEIGHT - this._radius
-        ) {
-            this._dy = -this._dy;
-        }
-
-        //move ball by incrementing the x & y coordinate with dx & dy
-        this._x += this._dx;
-        this._y += this._dy;
-    }
-
     //clear the current ball
     clear() {
         super.clear(20, 0, CANVAS_WIDTH - 20, CANVAS_HEIGHT);
@@ -217,6 +200,26 @@ function init() {
     var ball = new Ball(100, 200, 5, 5, 20, 0, Math.PI * 2, CANVAS, "#000000");
 
     setInterval(function () {
+        ball.clear(); //clear the current ball
+
+        ball.draw(); //draw the new ball with new position
+
+        //check if the ball (the center of the ball and its radius) will reach the borders of the canvas
+        //if it will, reverse the direction
+        if (
+            ball.x + ball.dx < ball.radius ||
+            ball.x + ball.dx > CANVAS_WIDTH - ball.radius
+        ) {
+            ball.reverseHorizontalDirection();
+        }
+
+        if (
+            ball.y + ball.dy < ball.radius ||
+            ball.y + ball.dy > CANVAS_HEIGHT - ball.radius
+        ) {
+            ball.reverseVerticalDirection();
+        }
+
         ball.move();
     }, 10);
 
@@ -229,9 +232,22 @@ function startGame(paddle1) {
         let keyPressed = e.keyCode;
 
         if (keyPressed === S_KEY) {
-            paddle1.moveDown();
+            //check if the paddle has reached the end of the canvas
+            if (paddle1.y + paddle1.height < CANVAS_HEIGHT) {
+                paddle1.clear(); //clear the current paddle
+                paddle1.moveDown();
+                paddle1.draw(); //draw the new paddle with new position
+            }
         } else if (keyPressed === W_KEY) {
-            paddle1.moveUp();
+            //check if the paddle has reached the beginning of the canvas
+            if (paddle1.y > CANVAS_Y) {
+                paddle1.clear(); //clear the current paddle
+                paddle1.moveUp();
+                paddle1.draw(); //draw the new paddle with new position
+            }
         }
     };
 }
+
+// the object moves by going from one position to another depending on what the speed is
+// the game defines the rules and how that object would be limited
