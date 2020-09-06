@@ -1,14 +1,24 @@
-const W_KEY = 87;
-const S_KEY = 83;
-
 const CANVAS = pongCanvas.getContext("2d");
 const CANVAS_WIDTH = pongCanvas.width;
 const CANVAS_HEIGHT = pongCanvas.height;
 const CANVAS_X = 0;
 const CANVAS_Y = 0;
 
+const PADDLE_WIDTH = 20;
+const PADDLE_HEIGHT = 100;
+const BALL_RADIUS = 20;
+
+const W_KEY = 87;
+const S_KEY = 83;
+
+const ARROW_UP_KEY = 38;
+const ARROW_DOWN_KEY = 40;
+
 var wPressed = false;
 var sPressed = false;
+
+var arrowUpPressed = false;
+var arrowDownPressed = false;
 
 document.onkeydown = function (e) {
     setKeyPressed(e.keyCode, true);
@@ -25,6 +35,12 @@ function setKeyPressed(keyPressed, isPressed) {
             break;
         case S_KEY:
             sPressed = isPressed;
+            break;
+        case ARROW_UP_KEY:
+            arrowUpPressed = isPressed;
+            break;
+        case ARROW_DOWN_KEY:
+            arrowDownPressed = isPressed;
             break;
         default:
             break;
@@ -274,6 +290,7 @@ class Pong {
 
         this._ball.draw(); //draw the new ball with new position
         this._paddle1.draw();
+        this._paddle2.draw();
 
         this.detectCollision();
 
@@ -283,19 +300,25 @@ class Pong {
     }
 
     detectCollision() {
-        //if the ball hits the paddle or the ball reaches the right border of the canvas,
-        //the ball bounces off
+        //if the ball hits a paddle (the ball's y is in between the start y and end y of the paddle
+        //and the ball's left/right x coordinate is smaller/bigger than the paddle's right/left x coordinate), it bounces off
         if (
             (this._ball.y > this._paddle1.y &&
                 this._ball.y < this._paddle1.y + this._paddle1.height &&
                 this._ball.x + this._ball.dx - this._ball.radius <
                     this._paddle1.x + this._paddle1.width) ||
-            this._ball.x + this._ball.dx > CANVAS_WIDTH - this._ball.radius
+            (this._ball.y > this._paddle2.y &&
+                this._ball.y < this._paddle2.y + this._paddle2.height &&
+                this._ball.x + this._ball.dx >
+                    this._paddle2.x - this._ball.radius)
         ) {
             //reverse the direction so that it bounces off the surface
             this._ball.reverseHorizontalDirection();
-        } else if (this._ball.x < this._ball.radius) {
-            //else, -1 score point
+        } else if (
+            this._ball.x - this._ball.radius < 0 ||
+            this._ball.x + this._ball.radius > CANVAS_WIDTH
+        ) {
+            //else if the ball crosses the left or right border of the canvas, -1 score point
             this.endGame();
         }
 
@@ -321,6 +344,18 @@ class Pong {
                 this._paddle1.moveDown();
             }
         }
+
+        if (arrowUpPressed) {
+            //check if the paddle has reached the top of the canvas
+            if (this._paddle2.y > CANVAS_Y) {
+                this._paddle2.moveUp();
+            }
+        } else if (arrowDownPressed) {
+            //check if the paddle has reached the bottom of the canvas
+            if (this._paddle2.y + this._paddle2.height < CANVAS_HEIGHT) {
+                this._paddle2.moveDown();
+            }
+        }
     }
 
     endGame() {
@@ -341,9 +376,25 @@ class Pong {
 
 // initialization function where all game assets are created and added to the game
 function init() {
-    var paddle1 = new Paddle(0, 0, 5, 5, 20, 100);
-    var ball = new Ball(100, 200, 5, 5, 20, 0, Math.PI * 2, "#000000");
-    var game = new Pong(CANVAS, paddle1, paddle1, ball);
+    var paddle1 = new Paddle(
+        CANVAS_X,
+        CANVAS_Y,
+        5,
+        5,
+        PADDLE_WIDTH,
+        PADDLE_HEIGHT
+    );
+    var paddle2 = new Paddle(
+        CANVAS_WIDTH - PADDLE_WIDTH,
+        0,
+        5,
+        5,
+        PADDLE_WIDTH,
+        PADDLE_HEIGHT
+    );
+
+    var ball = new Ball(100, 200, 5, 5, BALL_RADIUS, 0, Math.PI * 2, "#000000");
+    var game = new Pong(CANVAS, paddle1, paddle2, ball);
 
     var interval = setInterval(function () {
         game.draw();
