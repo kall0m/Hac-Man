@@ -144,6 +144,7 @@ class Paddle extends Asset {
         super(x, y, dx, dy, color);
         this._width = width;
         this._height = height;
+        this._score = 0;
     }
 
     get width() {
@@ -160,6 +161,14 @@ class Paddle extends Asset {
 
     set height(height) {
         this._height = height;
+    }
+
+    get score() {
+        return this._score;
+    }
+
+    set score(score) {
+        this._score = score;
     }
 
     //draw a paddle with its given x & y coordinates and width & height on the canvas
@@ -288,9 +297,11 @@ class Pong {
     draw() {
         this.clearCanvas();
 
-        this._ball.draw(); //draw the new ball with new position
+        this._ball.draw();
         this._paddle1.draw();
         this._paddle2.draw();
+
+        this.drawScore();
 
         this.detectCollision();
 
@@ -314,12 +325,13 @@ class Pong {
         ) {
             //reverse the direction so that it bounces off the surface
             this._ball.reverseHorizontalDirection();
-        } else if (
-            this._ball.x - this._ball.radius < 0 ||
-            this._ball.x + this._ball.radius > CANVAS_WIDTH
-        ) {
+        } else if (this._ball.x - this._ball.radius < 0) {
             //else if the ball crosses the left or right border of the canvas, -1 score point
-            this.endGame();
+            this._paddle2.score++;
+            this.restartGame();
+        } else if (this._ball.x + this._ball.radius > CANVAS_WIDTH) {
+            this._paddle1.score++;
+            this.restartGame();
         }
 
         //if the ball (the center of the ball and its radius) reaches the top or bottom border of the canvas,
@@ -358,10 +370,45 @@ class Pong {
         }
     }
 
-    endGame() {
-        alert("GAME OVER");
-        document.location.reload();
-        clearInterval(this._ballInterval); // Needed for Chrome to end game
+    drawScore() {
+        this._context.font = "16px Arial";
+        this._context.fillStyle = "#0095DD";
+        this._context.fillText(
+            this._paddle1.score + " : " + this._paddle2.score,
+            200,
+            20
+        );
+    }
+
+    startTimer() {
+        clearInterval(this._ballInterval);
+        var self = this;
+        this._ballInterval = setInterval(function () {
+            self.draw();
+        }, 10);
+    }
+
+    restartGame() {
+        alert(this._paddle1.score + " : " + this._paddle2.score);
+
+        this._paddle1.x = CANVAS_X;
+        this._paddle1.y = CANVAS_Y;
+
+        this._paddle2.x = CANVAS_WIDTH - PADDLE_WIDTH;
+        this._paddle2.y = CANVAS_Y;
+
+        this._ball.x = 100;
+        this._ball.y = 200;
+
+        if (this._ball.dx < 0) {
+            this._ball.dx = -this._ball.dx;
+        }
+
+        if (this._ball.dy < 0) {
+            this._ball.dy = -this._ball.dy;
+        }
+
+        this.startTimer();
     }
 
     clearCanvas() {
@@ -386,7 +433,7 @@ function init() {
     );
     var paddle2 = new Paddle(
         CANVAS_WIDTH - PADDLE_WIDTH,
-        0,
+        CANVAS_Y,
         5,
         5,
         PADDLE_WIDTH,
