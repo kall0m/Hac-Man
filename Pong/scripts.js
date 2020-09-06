@@ -1,11 +1,35 @@
-const S_KEY = 83;
 const W_KEY = 87;
+const S_KEY = 83;
 
 const CANVAS = pongCanvas.getContext("2d");
 const CANVAS_WIDTH = pongCanvas.width;
 const CANVAS_HEIGHT = pongCanvas.height;
 const CANVAS_X = 0;
 const CANVAS_Y = 0;
+
+var wPressed = false;
+var sPressed = false;
+
+document.onkeydown = function (e) {
+    setKeyPressed(e.keyCode, true);
+};
+
+document.onkeyup = function (e) {
+    setKeyPressed(e.keyCode, false);
+};
+
+function setKeyPressed(keyPressed, isPressed) {
+    switch (keyPressed) {
+        case W_KEY:
+            wPressed = isPressed;
+            break;
+        case S_KEY:
+            sPressed = isPressed;
+            break;
+        default:
+            break;
+    }
+}
 
 class Asset {
     constructor(x, y, dx, dy, color) {
@@ -253,6 +277,8 @@ class Pong {
 
         this.detectCollision();
 
+        this.movePaddles();
+
         this._ball.move();
     }
 
@@ -283,6 +309,20 @@ class Pong {
         }
     }
 
+    movePaddles() {
+        if (wPressed) {
+            //check if the paddle has reached the top of the canvas
+            if (this._paddle1.y > CANVAS_Y) {
+                this._paddle1.moveUp();
+            }
+        } else if (sPressed) {
+            //check if the paddle has reached the bottom of the canvas
+            if (this._paddle1.y + this._paddle1.height < CANVAS_HEIGHT) {
+                this._paddle1.moveDown();
+            }
+        }
+    }
+
     endGame() {
         alert("GAME OVER");
         document.location.reload();
@@ -299,8 +339,9 @@ class Pong {
     }
 }
 
+// initialization function where all game assets are created and added to the game
 function init() {
-    var paddle1 = new Paddle(0, 0, 5, 10, 20, 100);
+    var paddle1 = new Paddle(0, 0, 5, 5, 20, 100);
     var ball = new Ball(100, 200, 5, 5, 20, 0, Math.PI * 2, "#000000");
     var game = new Pong(CANVAS, paddle1, paddle1, ball);
 
@@ -309,41 +350,8 @@ function init() {
     }, 10);
 
     game.ballInterval = interval;
-
-    startGame(game);
 }
 
-function startGame(game) {
-    document.onkeydown = function (e) {
-        let keyPressed = e.keyCode;
-
-        if (keyPressed === S_KEY) {
-            //check if the paddle has reached the end of the canvas
-            if (game.paddle1.y + game.paddle1.height < CANVAS_HEIGHT) {
-                game.context.clearRect(
-                    0,
-                    0,
-                    game.paddle1.width + 1,
-                    CANVAS_HEIGHT
-                );
-                game.paddle1.moveDown();
-                game.paddle1.draw(); //draw the new paddle with new position
-            }
-        } else if (keyPressed === W_KEY) {
-            //check if the paddle has reached the beginning of the canvas
-            if (game.paddle1.y > CANVAS_Y) {
-                game.context.clearRect(
-                    0,
-                    0,
-                    game.paddle1.width + 1,
-                    CANVAS_HEIGHT
-                );
-                game.paddle1.moveUp();
-                game.paddle1.draw(); //draw the new paddle with new position
-            }
-        }
-    };
-}
-
+// Explanation of the logic of the code's structure:
 // the object moves by going from one position to another depending on what the speed is
 // the game defines the rules and how that object would be limited
