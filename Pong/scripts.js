@@ -194,6 +194,47 @@ class Ball extends Asset {
     }
 }
 
+class Pong {
+    constructor(paddle1, paddle2, ball, score) {
+        this._paddle1 = paddle1;
+        this._paddle2 = paddle2;
+        this._ball = ball;
+        this._score = score;
+    }
+
+    get paddle1() {
+        return this._paddle1;
+    }
+
+    set paddle1(paddle1) {
+        this._paddle1 = paddle1;
+    }
+
+    get paddle2() {
+        return this._paddle2;
+    }
+
+    set paddle2(paddle2) {
+        this._paddle2 = paddle2;
+    }
+
+    get ball() {
+        return this._ball;
+    }
+
+    set ball(ball) {
+        this._ball = ball;
+    }
+
+    get score() {
+        return this._score;
+    }
+
+    set score(score) {
+        this._score = score;
+    }
+}
+
 function init() {
     var paddle1 = new Paddle(0, 0, 5, 10, 20, 100, CANVAS);
 
