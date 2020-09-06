@@ -190,16 +190,17 @@ class Ball extends Asset {
 
     //clear the current ball
     clear() {
-        super.clear(20, 0, CANVAS_WIDTH - 20, CANVAS_HEIGHT);
+        super.clear(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
     }
 }
 
 class Pong {
-    constructor(paddle1, paddle2, ball, score) {
+    constructor(paddle1, paddle2, ball) {
         this._paddle1 = paddle1;
         this._paddle2 = paddle2;
         this._ball = ball;
-        this._score = score;
+        this._score = 0;
+        this._ballInterval = null;
     }
 
     get paddle1() {
@@ -233,38 +234,71 @@ class Pong {
     set score(score) {
         this._score = score;
     }
+
+    get ballInterval() {
+        return this._ballInterval;
+    }
+
+    set ballInterval(ballInterval) {
+        this._ballInterval = ballInterval;
+    }
+
+    draw() {
+        this._ball.clear(); //clear the current ball
+
+        this._ball.draw(); //draw the new ball with new position
+        this._paddle1.draw();
+
+        this.detectCollision();
+
+        this._ball.move();
+    }
+
+    detectCollision() {
+        //if the ball hits the paddle or the ball reaches the right border of the canvas,
+        //the ball bounces off
+        if (
+            (this._ball.y > this._paddle1.y &&
+                this._ball.y < this._paddle1.y + this._paddle1.height &&
+                this._ball.x + this._ball.dx - this._ball.radius <
+                    this._paddle1.x + this._paddle1.width) ||
+            this._ball.x + this._ball.dx > CANVAS_WIDTH - this._ball.radius
+        ) {
+            //reverse the direction so that it bounces off the surface
+            this._ball.reverseHorizontalDirection();
+        } else if (this._ball.x < this._ball.radius) {
+            //else, -1 score point
+            this.endGame();
+        }
+
+        //if the ball (the center of the ball and its radius) reaches the top or bottom border of the canvas,
+        //reverse the direction so that it bounce off the border
+        if (
+            this._ball.y + this._ball.dy < this._ball.radius ||
+            this._ball.y + this._ball.dy > CANVAS_HEIGHT - this._ball.radius
+        ) {
+            this._ball.reverseVerticalDirection();
+        }
+    }
+
+    endGame() {
+        alert("GAME OVER");
+        document.location.reload();
+        clearInterval(this._ballInterval); // Needed for Chrome to end game
+    }
 }
 
 function init() {
     var paddle1 = new Paddle(0, 0, 5, 10, 20, 100, CANVAS);
-
     var ball = new Ball(100, 200, 5, 5, 20, 0, Math.PI * 2, CANVAS, "#000000");
+    var game = new Pong(paddle1, paddle1, ball);
 
-    setInterval(function () {
-        ball.clear(); //clear the current ball
-
-        ball.draw(); //draw the new ball with new position
-
-        //check if the ball (the center of the ball and its radius) will reach the borders of the canvas
-        //if it will, reverse the direction
-        if (
-            ball.x + ball.dx < ball.radius ||
-            ball.x + ball.dx > CANVAS_WIDTH - ball.radius
-        ) {
-            ball.reverseHorizontalDirection();
-        }
-
-        if (
-            ball.y + ball.dy < ball.radius ||
-            ball.y + ball.dy > CANVAS_HEIGHT - ball.radius
-        ) {
-            ball.reverseVerticalDirection();
-        }
-
-        ball.move();
+    var interval = setInterval(function () {
+        game.draw();
     }, 10);
 
-    paddle1.draw();
+    game.ballInterval = interval;
+
     startGame(paddle1);
 }
 
