@@ -8,12 +8,12 @@ const CANVAS_X = 0;
 const CANVAS_Y = 0;
 
 class Asset {
-    constructor(x, y, dx, dy, context, color) {
+    constructor(x, y, dx, dy, color) {
         this._x = x;
         this._y = y;
         this._dx = dx;
         this._dy = dy;
-        this._context = context;
+        this._context = null;
         this._color = color;
     }
 
@@ -97,15 +97,11 @@ class Asset {
         this.moveRight();
         this.moveDown();
     }
-
-    clear(x, y, width, height) {
-        this._context.clearRect(x, y, width, height);
-    }
 }
 
 class Paddle extends Asset {
-    constructor(x, y, dx, dy, width, height, context, color) {
-        super(x, y, dx, dy, context, color);
+    constructor(x, y, dx, dy, width, height, color) {
+        super(x, y, dx, dy, color);
         this._width = width;
         this._height = height;
     }
@@ -133,16 +129,11 @@ class Paddle extends Asset {
         this._context.stroke();
         this._context.closePath();
     }
-
-    //clear the current paddle
-    clear() {
-        super.clear(0, 0, this._width + 1, CANVAS_HEIGHT); //width of paddle + 1 px for the outline
-    }
 }
 
 class Ball extends Asset {
-    constructor(x, y, dx, dy, radius, startAngle, endAngle, context, color) {
-        super(x, y, dx, dy, context, color);
+    constructor(x, y, dx, dy, radius, startAngle, endAngle, color) {
+        super(x, y, dx, dy, color);
         this._radius = radius;
         this._startAngle = startAngle;
         this._endAngle = endAngle;
@@ -187,20 +178,31 @@ class Ball extends Asset {
         this._context.fill();
         this._context.closePath();
     }
-
-    //clear the current ball
-    clear() {
-        super.clear(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-    }
 }
 
 class Pong {
-    constructor(paddle1, paddle2, ball) {
+    constructor(context, paddle1, paddle2, ball) {
+        this._context = context;
+
         this._paddle1 = paddle1;
+        this._paddle1.context = context;
+
         this._paddle2 = paddle2;
+        this._paddle2.context = context;
+
         this._ball = ball;
+        this._ball.context = context;
+
         this._score = 0;
         this._ballInterval = null;
+    }
+
+    get context() {
+        return this._context;
+    }
+
+    set context(context) {
+        this._context = context;
     }
 
     get paddle1() {
@@ -244,7 +246,7 @@ class Pong {
     }
 
     draw() {
-        this._ball.clear(); //clear the current ball
+        this.clearCanvas();
 
         this._ball.draw(); //draw the new ball with new position
         this._paddle1.draw();
@@ -286,12 +288,21 @@ class Pong {
         document.location.reload();
         clearInterval(this._ballInterval); // Needed for Chrome to end game
     }
+
+    clearCanvas() {
+        this._context.clearRect(
+            CANVAS_X,
+            CANVAS_Y,
+            CANVAS_WIDTH,
+            CANVAS_HEIGHT
+        );
+    }
 }
 
 function init() {
-    var paddle1 = new Paddle(0, 0, 5, 10, 20, 100, CANVAS);
-    var ball = new Ball(100, 200, 5, 5, 20, 0, Math.PI * 2, CANVAS, "#000000");
-    var game = new Pong(paddle1, paddle1, ball);
+    var paddle1 = new Paddle(0, 0, 5, 10, 20, 100);
+    var ball = new Ball(100, 200, 5, 5, 20, 0, Math.PI * 2, "#000000");
+    var game = new Pong(CANVAS, paddle1, paddle1, ball);
 
     var interval = setInterval(function () {
         game.draw();
@@ -299,26 +310,36 @@ function init() {
 
     game.ballInterval = interval;
 
-    startGame(paddle1);
+    startGame(game);
 }
 
-function startGame(paddle1) {
+function startGame(game) {
     document.onkeydown = function (e) {
         let keyPressed = e.keyCode;
 
         if (keyPressed === S_KEY) {
             //check if the paddle has reached the end of the canvas
-            if (paddle1.y + paddle1.height < CANVAS_HEIGHT) {
-                paddle1.clear(); //clear the current paddle
-                paddle1.moveDown();
-                paddle1.draw(); //draw the new paddle with new position
+            if (game.paddle1.y + game.paddle1.height < CANVAS_HEIGHT) {
+                game.context.clearRect(
+                    0,
+                    0,
+                    game.paddle1.width + 1,
+                    CANVAS_HEIGHT
+                );
+                game.paddle1.moveDown();
+                game.paddle1.draw(); //draw the new paddle with new position
             }
         } else if (keyPressed === W_KEY) {
             //check if the paddle has reached the beginning of the canvas
-            if (paddle1.y > CANVAS_Y) {
-                paddle1.clear(); //clear the current paddle
-                paddle1.moveUp();
-                paddle1.draw(); //draw the new paddle with new position
+            if (game.paddle1.y > CANVAS_Y) {
+                game.context.clearRect(
+                    0,
+                    0,
+                    game.paddle1.width + 1,
+                    CANVAS_HEIGHT
+                );
+                game.paddle1.moveUp();
+                game.paddle1.draw(); //draw the new paddle with new position
             }
         }
     };
