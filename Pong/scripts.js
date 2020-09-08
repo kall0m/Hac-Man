@@ -1,33 +1,41 @@
+//define CANVAS attributes as constants
 const CANVAS = pongCanvas.getContext("2d");
 const CANVAS_WIDTH = pongCanvas.width;
 const CANVAS_HEIGHT = pongCanvas.height;
 const CANVAS_X = 0;
 const CANVAS_Y = 0;
 
+//define game assets attributes as constants
 const PADDLE_WIDTH = 20;
 const PADDLE_HEIGHT = 100;
 const BALL_RADIUS = 20;
 
+//define paddle control keys key codes as constants
 const W_KEY = 87;
 const S_KEY = 83;
 
 const ARROW_UP_KEY = 38;
 const ARROW_DOWN_KEY = 40;
 
+//define boolean variables for the state of the keys to check whether it is pressed or released
 var wPressed = false;
 var sPressed = false;
 
 var arrowUpPressed = false;
 var arrowDownPressed = false;
 
+//when a key is pressed, execute the setKeyPressed function to know that it was pressed
 document.onkeydown = function (e) {
     setKeyPressed(e.keyCode, true);
 };
 
+//when a key is released, execute the setKeyPressed function to know that it was released
 document.onkeyup = function (e) {
     setKeyPressed(e.keyCode, false);
 };
 
+//check if the key that was pressed is W, S, Arrow Up or Arrow Down
+//and set its boolean variable that checks its state to true if pressed and to false if released
 function setKeyPressed(keyPressed, isPressed) {
     switch (keyPressed) {
         case W_KEY:
