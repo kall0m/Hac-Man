@@ -467,7 +467,7 @@ function init() {
     var ball = new Ball(100, 200, 5, 5, BALL_RADIUS, 0, Math.PI * 2, "#000000");
     var game = new Pong(CANVAS, paddle1, paddle2, ball);
 
-    //start the game and draw it EXEC_INTERVAL milliseconds
+    //start the game and draw it every EXEC_INTERVAL milliseconds
     game.start(EXEC_INTERVAL);
 }
 
