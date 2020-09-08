@@ -345,10 +345,10 @@ class Pong {
         } else if (this._ball.x - this._ball.radius < 0) {
             //else if the ball crosses the left or right border of the canvas, -1 score point
             this._paddle2.score++;
-            this.restartGame();
+            this.restart();
         } else if (this._ball.x + this._ball.radius > CANVAS_WIDTH) {
             this._paddle1.score++;
-            this.restartGame();
+            this.restart();
         }
 
         //if the ball (the center of the ball and its radius) reaches the top or bottom border of the canvas,
@@ -397,8 +397,8 @@ class Pong {
         );
     }
 
-    //method to restart the interval that executes the main draw method for the game Pong
-    startTimer(time) {
+    //method to start the interval that executes the main draw method for the game Pong every "time" milliseconds
+    start(time) {
         clearInterval(this._ballInterval);
         var self = this;
         this._ballInterval = setInterval(function () {
@@ -406,7 +406,9 @@ class Pong {
         }, time);
     }
 
-    restartGame() {
+    //method to display the current score, reinitialize the game assets and
+    //restart the interval that executes the main draw method for the game Pong
+    restart() {
         alert(this._paddle1.score + " : " + this._paddle2.score);
 
         //reset paddle1 coordinates
@@ -430,7 +432,7 @@ class Pong {
         }
 
         //start the interval timer again for every EXEC_INTERVAL milliseconds
-        this.startTimer(EXEC_INTERVAL);
+        this.start(EXEC_INTERVAL);
     }
 
     clearCanvas() {
@@ -465,12 +467,8 @@ function init() {
     var ball = new Ball(100, 200, 5, 5, BALL_RADIUS, 0, Math.PI * 2, "#000000");
     var game = new Pong(CANVAS, paddle1, paddle2, ball);
 
-    //execute the main draw method for the game Pong every EXEC_INTERVAL milliseconds
-    var interval = setInterval(function () {
-        game.draw();
-    }, EXEC_INTERVAL);
-
-    game.ballInterval = interval;
+    //start the game and draw it EXEC_INTERVAL milliseconds
+    game.start(EXEC_INTERVAL);
 }
 
 // Explanation of the logic of the code's structure:
