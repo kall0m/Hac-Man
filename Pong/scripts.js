@@ -10,6 +10,9 @@ const PADDLE_WIDTH = 20;
 const PADDLE_HEIGHT = 100;
 const BALL_RADIUS = 20;
 
+//define the interval of time in milliseconds in which the game is executed
+const EXEC_INTERVAL = 10;
+
 //define paddle control keys key codes as constants
 const W_KEY = 87;
 const S_KEY = 83;
@@ -55,6 +58,7 @@ function setKeyPressed(keyPressed, isPressed) {
     }
 }
 
+//define class Asset for a game asset with x and y coordinates, speed (dx and dy) and color
 class Asset {
     constructor(x, y, dx, dy, color) {
         this._x = x;
@@ -147,6 +151,7 @@ class Asset {
     }
 }
 
+//define child class Paddle of class Asset for a pong paddle with widht, height and score
 class Paddle extends Asset {
     constructor(x, y, dx, dy, width, height, color) {
         super(x, y, dx, dy, color);
@@ -188,6 +193,7 @@ class Paddle extends Asset {
     }
 }
 
+//define child class Ball of class Asset for a ball with radius, start and end angle for drawing
 class Ball extends Asset {
     constructor(x, y, dx, dy, radius, startAngle, endAngle, color) {
         super(x, y, dx, dy, color);
@@ -237,6 +243,8 @@ class Ball extends Asset {
     }
 }
 
+//define class Pong for the game Pong with assets paddle 1 (player 1),
+//paddle 2 (player 2), a ball and context for drawing the game assets
 class Pong {
     constructor(context, paddle1, paddle2, ball) {
         this._context = context;
@@ -302,6 +310,7 @@ class Pong {
         this._ballInterval = ballInterval;
     }
 
+    //the main method of the Pong game which draws all assets and starts the game
     draw() {
         this.clearCanvas();
 
@@ -388,23 +397,27 @@ class Pong {
         );
     }
 
-    startTimer() {
+    //method to restart the interval that executes the main draw method for the game Pong
+    startTimer(time) {
         clearInterval(this._ballInterval);
         var self = this;
         this._ballInterval = setInterval(function () {
             self.draw();
-        }, 10);
+        }, time);
     }
 
     restartGame() {
         alert(this._paddle1.score + " : " + this._paddle2.score);
 
+        //reset paddle1 coordinates
         this._paddle1.x = CANVAS_X;
         this._paddle1.y = CANVAS_Y;
 
+        //reset paddle2 coordinates
         this._paddle2.x = CANVAS_WIDTH - PADDLE_WIDTH;
         this._paddle2.y = CANVAS_Y;
 
+        //reset ball coordinates
         this._ball.x = 100;
         this._ball.y = 200;
 
@@ -416,7 +429,8 @@ class Pong {
             this._ball.dy = -this._ball.dy;
         }
 
-        this.startTimer();
+        //start the interval timer again for every EXEC_INTERVAL milliseconds
+        this.startTimer(EXEC_INTERVAL);
     }
 
     clearCanvas() {
@@ -451,9 +465,10 @@ function init() {
     var ball = new Ball(100, 200, 5, 5, BALL_RADIUS, 0, Math.PI * 2, "#000000");
     var game = new Pong(CANVAS, paddle1, paddle2, ball);
 
+    //execute the main draw method for the game Pong every EXEC_INTERVAL milliseconds
     var interval = setInterval(function () {
         game.draw();
-    }, 10);
+    }, EXEC_INTERVAL);
 
     game.ballInterval = interval;
 }
