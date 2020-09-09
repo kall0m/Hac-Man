@@ -12,6 +12,7 @@ const BALL_RADIUS = 12;
 
 //define the interval of time in milliseconds in which the game is executed
 const EXEC_INTERVAL = 10;
+const END_GAME_POINTS = 5;
 
 //define paddle control keys key codes as constants
 const W_KEY = 87;
@@ -27,8 +28,11 @@ var sPressed = false;
 var arrowUpPressed = false;
 var arrowDownPressed = false;
 
+var startGameKeyPressed = false;
+
 //when a key is pressed, execute the setKeyPressed function to know that it was pressed
 document.onkeydown = function (e) {
+    startGameKeyPressed = true;
     setKeyPressed(e.keyCode, true);
 };
 
@@ -248,6 +252,8 @@ class Ball extends Asset {
 class Pong {
     constructor(context, paddle1, paddle2, ball) {
         this._context = context;
+        this._context.font = "20px Arial";
+        this._context.fillStyle = "#000000";
 
         this._paddle1 = paddle1;
         this._paddle1.context = context;
@@ -345,9 +351,19 @@ class Pong {
         } else if (this._ball.x - this._ball.radius < 0) {
             //else if the ball crosses the left or right border of the canvas, -1 score point
             this._paddle2.score++;
+
+            if (this._paddle2.score === END_GAME_POINTS) {
+                this.end("Player 2");
+            }
+
             this.restart();
         } else if (this._ball.x + this._ball.radius > CANVAS_WIDTH) {
             this._paddle1.score++;
+
+            if (this._paddle1.score === END_GAME_POINTS) {
+                this.end("Player 1");
+            }
+
             this.restart();
         }
 
@@ -388,12 +404,18 @@ class Pong {
     }
 
     drawScore() {
-        this._context.font = "20px Arial";
-        this._context.fillStyle = "#000000";
         this._context.fillText(
             this._paddle1.score + " : " + this._paddle2.score,
             CANVAS_WIDTH / 2 - 20,
             30
+        );
+    }
+
+    drawWelcomeMessage() {
+        this._context.fillText(
+            "Press any key to start new game.",
+            CANVAS_WIDTH / 3,
+            CANVAS_WIDTH / 6
         );
     }
 
@@ -402,14 +424,31 @@ class Pong {
         clearInterval(this._ballInterval);
         var self = this;
         this._ballInterval = setInterval(function () {
-            self.draw();
+            //check if any key was pressed to start the game initially
+            if (startGameKeyPressed) {
+                self.draw();
+            }
         }, time);
+    }
+
+    end(message) {
+        alert(message + " is the winner! Bravo!");
+
+        this._paddle1.score = 0;
+        this._paddle2.score = 0;
+
+        startGameKeyPressed = false;
+
+        this.drawWelcomeMessage();
     }
 
     //method to display the current score, reinitialize the game assets and
     //restart the interval that executes the main draw method for the game Pong
     restart() {
-        alert(this._paddle1.score + " : " + this._paddle2.score);
+        //alert the score only when a player has scored
+        if (this._paddle1.score > 0 && this._paddle2.score > 0) {
+            alert(this._paddle1.score + " : " + this._paddle2.score);
+        }
 
         //reset paddle1 coordinates
         this._paddle1.x = PADDLE_WIDTH;
@@ -513,7 +552,10 @@ function init() {
         Math.PI * 2,
         "#f2a62e"
     );
+
     var game = new Pong(CANVAS, paddle1, paddle2, ball);
+
+    game.drawWelcomeMessage();
 
     //start the game and draw it every EXEC_INTERVAL milliseconds
     game.start(EXEC_INTERVAL);
