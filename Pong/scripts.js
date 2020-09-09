@@ -8,7 +8,7 @@ const CANVAS_Y = 0;
 //define game assets attributes as constants
 const PADDLE_WIDTH = 20;
 const PADDLE_HEIGHT = 100;
-const BALL_RADIUS = 20;
+const BALL_RADIUS = 12;
 
 //define the interval of time in milliseconds in which the game is executed
 const EXEC_INTERVAL = 10;
@@ -511,7 +511,7 @@ function init() {
         BALL_RADIUS,
         0,
         Math.PI * 2,
-        "#000000"
+        "#f2a62e"
     );
     var game = new Pong(CANVAS, paddle1, paddle2, ball);
 
