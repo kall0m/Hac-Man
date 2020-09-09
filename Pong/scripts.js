@@ -446,7 +446,7 @@ class Pong {
     //restart the interval that executes the main draw method for the game Pong
     restart() {
         //alert the score only when a player has scored
-        if (this._paddle1.score > 0 && this._paddle2.score > 0) {
+        if (this._paddle1.score > 0 || this._paddle2.score > 0) {
             alert(this._paddle1.score + " : " + this._paddle2.score);
         }
 
