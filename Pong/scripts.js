@@ -388,12 +388,12 @@ class Pong {
     }
 
     drawScore() {
-        this._context.font = "16px Arial";
-        this._context.fillStyle = "#0095DD";
+        this._context.font = "20px Arial";
+        this._context.fillStyle = "#000000";
         this._context.fillText(
             this._paddle1.score + " : " + this._paddle2.score,
-            200,
-            20
+            CANVAS_WIDTH / 2 - 20,
+            30
         );
     }
 
@@ -412,16 +412,19 @@ class Pong {
         alert(this._paddle1.score + " : " + this._paddle2.score);
 
         //reset paddle1 coordinates
-        this._paddle1.x = CANVAS_X;
-        this._paddle1.y = CANVAS_Y;
+        this._paddle1.x = PADDLE_WIDTH;
+        this._paddle1.y = CANVAS_HEIGHT / 2 - PADDLE_HEIGHT / 2;
 
         //reset paddle2 coordinates
-        this._paddle2.x = CANVAS_WIDTH - PADDLE_WIDTH;
-        this._paddle2.y = CANVAS_Y;
+        this._paddle2.x = CANVAS_WIDTH - PADDLE_WIDTH * 2;
+        this._paddle2.y = CANVAS_HEIGHT / 2 - PADDLE_HEIGHT / 2;
 
         //reset ball coordinates
-        this._ball.x = 100;
-        this._ball.y = 200;
+        this._ball.x = CANVAS_WIDTH / 2;
+        this._ball.y = getRandomInRange(
+            CANVAS_Y + BALL_RADIUS,
+            CANVAS_HEIGHT - BALL_RADIUS
+        );
 
         if (this._ball.dx < 0) {
             this._ball.dx = -this._ball.dx;
@@ -436,35 +439,71 @@ class Pong {
     }
 
     clearCanvas() {
+        //clear the whole canvas
         this._context.clearRect(
             CANVAS_X,
             CANVAS_Y,
             CANVAS_WIDTH,
             CANVAS_HEIGHT
         );
+
+        this._context.beginPath();
+
+        //start drawing from top left corner of canvas (0,0)
+        this._context.moveTo(CANVAS_X, CANVAS_Y);
+
+        //draw the border of the canvas
+        this._context.lineTo(CANVAS_X, CANVAS_HEIGHT);
+        this._context.lineTo(CANVAS_WIDTH, CANVAS_HEIGHT);
+        this._context.lineTo(CANVAS_WIDTH, CANVAS_Y);
+        this._context.lineTo(CANVAS_X, CANVAS_Y);
+
+        //draw a line in the middle vertical of the canvas
+        this._context.moveTo(CANVAS_WIDTH / 2, CANVAS_Y + 50);
+        this._context.lineTo(CANVAS_WIDTH / 2, CANVAS_HEIGHT);
+
+        this._context.stroke();
     }
+}
+
+function getRandomInRange(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 // initialization function where all game assets are created and added to the game
 function init() {
     var paddle1 = new Paddle(
-        CANVAS_X,
-        CANVAS_Y,
+        PADDLE_WIDTH,
+        CANVAS_HEIGHT / 2 - PADDLE_HEIGHT / 2,
         5,
         5,
         PADDLE_WIDTH,
         PADDLE_HEIGHT
     );
     var paddle2 = new Paddle(
-        CANVAS_WIDTH - PADDLE_WIDTH,
-        CANVAS_Y,
+        CANVAS_WIDTH - PADDLE_WIDTH * 2,
+        CANVAS_HEIGHT / 2 - PADDLE_HEIGHT / 2,
         5,
         5,
         PADDLE_WIDTH,
         PADDLE_HEIGHT
     );
 
-    var ball = new Ball(100, 200, 5, 5, BALL_RADIUS, 0, Math.PI * 2, "#000000");
+    var randomY = getRandomInRange(
+        CANVAS_Y + BALL_RADIUS,
+        CANVAS_HEIGHT - BALL_RADIUS
+    );
+
+    var ball = new Ball(
+        CANVAS_WIDTH / 2,
+        randomY,
+        5,
+        5,
+        BALL_RADIUS,
+        0,
+        Math.PI * 2,
+        "#000000"
+    );
     var game = new Pong(CANVAS, paddle1, paddle2, ball);
 
     //start the game and draw it every EXEC_INTERVAL milliseconds
