@@ -434,6 +434,14 @@ class Pong {
             this._ball.dy = -this._ball.dy;
         }
 
+        //reset state of keys
+
+        wPressed = false;
+        sPressed = false;
+
+        arrowUpPressed = false;
+        arrowDownPressed = false;
+
         //start the interval timer again for every EXEC_INTERVAL milliseconds
         this.start(EXEC_INTERVAL);
     }
@@ -466,11 +474,12 @@ class Pong {
     }
 }
 
+//function to generate a random number between "min" and "max"
 function getRandomInRange(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-// initialization function where all game assets are created and added to the game
+//initialization function where all game assets are created and added to the game
 function init() {
     var paddle1 = new Paddle(
         PADDLE_WIDTH,
