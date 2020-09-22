@@ -2,8 +2,8 @@ import Asset from "./Asset.js";
 
 //define child class Ball of class Asset for a ball with radius, start and end angle for drawing
 export default class Ball extends Asset {
-    constructor(x, y, dx, dy, radius, startAngle, endAngle, color) {
-        super(x, y, dx, dy, color);
+    constructor(context, x, y, dx, dy, radius, startAngle, endAngle, color) {
+        super(context, x, y, dx, dy, color);
         this._radius = radius;
         this._startAngle = startAngle;
         this._endAngle = endAngle;

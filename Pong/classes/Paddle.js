@@ -2,8 +2,8 @@ import Asset from "./Asset.js";
 
 //define child class Paddle of class Asset for a pong paddle with widht, height and score
 export default class Paddle extends Asset {
-    constructor(x, y, dx, dy, width, height, color) {
-        super(x, y, dx, dy, color);
+    constructor(context, x, y, dx, dy, width, height, color) {
+        super(context, x, y, dx, dy, color);
         this._width = width;
         this._height = height;
         this._score = 0;

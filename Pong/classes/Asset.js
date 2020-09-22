@@ -1,12 +1,20 @@
 //define class Asset for a game asset with x and y coordinates, speed (dx and dy) and color
 export default class Asset {
-    constructor(x, y, dx, dy, color) {
+    constructor(context, x, y, dx, dy, color) {
+        this._context = context;
         this._x = x;
         this._y = y;
         this._dx = dx;
         this._dy = dy;
-        this._context = null;
         this._color = color;
+    }
+
+    get context() {
+        return this._context;
+    }
+
+    set context(context) {
+        this._context = context;
     }
 
     get x() {
@@ -39,14 +47,6 @@ export default class Asset {
 
     set dy(dy) {
         this._dy = dy;
-    }
-
-    get context() {
-        return this._context;
-    }
-
-    set context(context) {
-        this._context = context;
     }
 
     get color() {

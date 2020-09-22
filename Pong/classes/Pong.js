@@ -17,16 +17,9 @@ export default class Pong {
         this._context = context;
         this._context.font = "20px Arial";
         this._context.fillStyle = "#000000";
-
         this._paddle1 = paddle1;
-        this._paddle1.context = context;
-
         this._paddle2 = paddle2;
-        this._paddle2.context = context;
-
         this._ball = ball;
-        this._ball.context = context;
-
         this._score = 0;
         this._ballInterval = null;
     }

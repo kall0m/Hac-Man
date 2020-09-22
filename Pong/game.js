@@ -7,6 +7,7 @@ import Pong from "./classes/Pong.js";
 //initialization function where all game assets are created and added to the game
 function init() {
     let paddle1 = new Paddle(
+        GameSettings.CANVAS,
         GameSettings.PADDLE_WIDTH,
         GameSettings.CANVAS_HEIGHT / 2 - GameSettings.PADDLE_HEIGHT / 2,
         5,
@@ -15,6 +16,7 @@ function init() {
         GameSettings.PADDLE_HEIGHT
     );
     let paddle2 = new Paddle(
+        GameSettings.CANVAS,
         GameSettings.CANVAS_WIDTH - GameSettings.PADDLE_WIDTH * 2,
         GameSettings.CANVAS_HEIGHT / 2 - GameSettings.PADDLE_HEIGHT / 2,
         5,
@@ -29,6 +31,7 @@ function init() {
     );
 
     let ball = new Ball(
+        GameSettings.CANVAS,
         GameSettings.CANVAS_WIDTH / 2,
         randomY,
         5,
