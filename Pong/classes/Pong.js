@@ -194,7 +194,10 @@ export default class Pong {
 
     //method to start the interval that executes the main draw method for the game Pong every "time" milliseconds
     start(time) {
+        this.drawWelcomeMessage();
+
         clearInterval(this._ballInterval);
+
         var self = this;
         this._ballInterval = setInterval(function () {
             //check if any key was pressed to start the game initially
@@ -211,8 +214,6 @@ export default class Pong {
         this._paddle2.score = 0;
 
         resetStartGameKeyPressed();
-
-        this.drawWelcomeMessage();
     }
 
     //method to display the current score, reinitialize the game assets and

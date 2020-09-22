@@ -41,8 +41,6 @@ function init() {
 
     let game = new Pong(GameSettings.CANVAS, paddle1, paddle2, ball);
 
-    game.drawWelcomeMessage();
-
     //start the game and draw it every EXEC_INTERVAL milliseconds
     game.start(GameSettings.EXEC_INTERVAL);
 }
