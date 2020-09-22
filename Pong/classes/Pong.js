@@ -235,9 +235,8 @@ export default class Pong {
             GameSettings.CANVAS_HEIGHT - GameSettings.BALL_RADIUS
         );
 
-        if (this._ball.dx < 0) {
-            this._ball.reverseHorizontalDirection();
-        }
+        //pass the ball from the opposite direction so that it is fair
+        this._ball.reverseHorizontalDirection();
 
         if (this._ball.dy < 0) {
             this._ball.reverseVerticalDirection();

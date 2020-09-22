@@ -1,6 +1,6 @@
 import Paddle from "./classes/Paddle.js";
 import GameSettings from "./classes/GameSettings.js";
-import { getRandomInRange } from "./utils/random.js";
+import { getRandomInRange, getRandomSign } from "./utils/random.js";
 import Ball from "./classes/Ball.js";
 import Pong from "./classes/Pong.js";
 
@@ -30,11 +30,12 @@ function init() {
         GameSettings.CANVAS_HEIGHT - GameSettings.BALL_RADIUS
     );
 
+    //initialize a ball and pass it randomly to the left or the right player
     let ball = new Ball(
         GameSettings.CANVAS,
         GameSettings.CANVAS_WIDTH / 2,
         randomY,
-        GameSettings.BALL_SPEED,
+        GameSettings.BALL_SPEED * getRandomSign(),
         GameSettings.BALL_SPEED,
         GameSettings.BALL_RADIUS,
         GameSettings.BALL_START_ANGLE,
