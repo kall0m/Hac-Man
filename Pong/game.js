@@ -10,8 +10,8 @@ function init() {
         GameSettings.CANVAS,
         GameSettings.PADDLE_WIDTH,
         GameSettings.CANVAS_HEIGHT / 2 - GameSettings.PADDLE_HEIGHT / 2,
-        5,
-        5,
+        GameSettings.PADDLE_SPEED,
+        GameSettings.PADDLE_SPEED,
         GameSettings.PADDLE_WIDTH,
         GameSettings.PADDLE_HEIGHT
     );
@@ -19,8 +19,8 @@ function init() {
         GameSettings.CANVAS,
         GameSettings.CANVAS_WIDTH - GameSettings.PADDLE_WIDTH * 2,
         GameSettings.CANVAS_HEIGHT / 2 - GameSettings.PADDLE_HEIGHT / 2,
-        5,
-        5,
+        GameSettings.PADDLE_SPEED,
+        GameSettings.PADDLE_SPEED,
         GameSettings.PADDLE_WIDTH,
         GameSettings.PADDLE_HEIGHT
     );
@@ -34,12 +34,12 @@ function init() {
         GameSettings.CANVAS,
         GameSettings.CANVAS_WIDTH / 2,
         randomY,
-        5,
-        5,
+        GameSettings.BALL_SPEED,
+        GameSettings.BALL_SPEED,
         GameSettings.BALL_RADIUS,
-        0,
-        Math.PI * 2,
-        "#f2a62e"
+        GameSettings.BALL_START_ANGLE,
+        GameSettings.BALL_END_ANGLE,
+        GameSettings.BALL_COLOR
     );
 
     let game = new Pong(GameSettings.CANVAS, paddle1, paddle2, ball);

@@ -15,8 +15,8 @@ import {
 export default class Pong {
     constructor(context, paddle1, paddle2, ball) {
         this._context = context;
-        this._context.font = "20px Arial";
-        this._context.fillStyle = "#000000";
+        this._context.font = GameSettings.CANVAS_FONT;
+        this._context.fillStyle = GameSettings.CANVAS_COLOR;
         this._paddle1 = paddle1;
         this._paddle2 = paddle2;
         this._ball = ball;
@@ -109,7 +109,7 @@ export default class Pong {
             this._paddle2.score++;
 
             if (this._paddle2.score === GameSettings.END_GAME_POINTS) {
-                this.end("Player 2");
+                this.end(GameSettings.PLAYER_2);
             }
 
             this.restart();
@@ -120,7 +120,7 @@ export default class Pong {
             this._paddle1.score++;
 
             if (this._paddle1.score === GameSettings.END_GAME_POINTS) {
-                this.end("Player 1");
+                this.end(GameSettings.PLAYER_1);
             }
 
             this.restart();
@@ -179,7 +179,7 @@ export default class Pong {
 
     drawWelcomeMessage() {
         this._context.fillText(
-            "Press any key to start new game.",
+            GameSettings.WELCOME_MESSAGE,
             GameSettings.CANVAS_WIDTH / 3,
             GameSettings.CANVAS_WIDTH / 6
         );
@@ -201,7 +201,7 @@ export default class Pong {
     }
 
     end(message) {
-        alert(message + " is the winner! Bravo!");
+        alert(message + GameSettings.WINNER_MESSAGE);
 
         this._paddle1.score = 0;
         this._paddle2.score = 0;
@@ -236,11 +236,11 @@ export default class Pong {
         );
 
         if (this._ball.dx < 0) {
-            this._ball.dx = -this._ball.dx;
+            this._ball.reverseHorizontalDirection();
         }
 
         if (this._ball.dy < 0) {
-            this._ball.dy = -this._ball.dy;
+            this._ball.reverseVerticalDirection();
         }
 
         //reset state of movement keys
